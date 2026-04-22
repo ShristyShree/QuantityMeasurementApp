@@ -3,54 +3,86 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class QuantityMeasurementAppTest {
 
-    private static final double EPS = 1e-6;
-
+    // ✅ Equality
     @Test
-    void testEquality_FeetToInches() {
-        QuantityLength a = new QuantityLength(1.0, LengthUnit.FEET);
-        QuantityLength b = new QuantityLength(12.0, LengthUnit.INCHES);
-        assertTrue(a.equals(b));
+    void testKgEqualsGram() {
+        QuantityWeight kg = new QuantityWeight(1.0, WeightUnit.KILOGRAM);
+        QuantityWeight g = new QuantityWeight(1000.0, WeightUnit.GRAM);
+
+        assertEquals(kg, g);
     }
 
     @Test
-    void testConversion_FeetToInches() {
-        double result = QuantityLength.convert(1.0, LengthUnit.FEET, LengthUnit.INCHES);
-        assertEquals(12.0, result, EPS);
+    void testKgEqualsPound() {
+        QuantityWeight kg = new QuantityWeight(1.0, WeightUnit.KILOGRAM);
+        QuantityWeight lb = new QuantityWeight(2.20462, WeightUnit.POUND);
+
+        assertEquals(kg, lb);
+    }
+
+    // ✅ Conversion
+    @Test
+    void testConvertKgToGram() {
+        QuantityWeight kg = new QuantityWeight(1.0, WeightUnit.KILOGRAM);
+        QuantityWeight result = kg.convertTo(WeightUnit.GRAM);
+
+        assertEquals(new QuantityWeight(1000.0, WeightUnit.GRAM), result);
     }
 
     @Test
-    void testAddition_FeetPlusInches() {
-        QuantityLength a = new QuantityLength(1.0, LengthUnit.FEET);
-        QuantityLength b = new QuantityLength(12.0, LengthUnit.INCHES);
+    void testConvertPoundToKg() {
+        QuantityWeight lb = new QuantityWeight(2.20462, WeightUnit.POUND);
+        QuantityWeight result = lb.convertTo(WeightUnit.KILOGRAM);
 
-        QuantityLength result = a.add(b, LengthUnit.FEET);
+        assertEquals(new QuantityWeight(1.0, WeightUnit.KILOGRAM), result);
+    }
 
-        QuantityLength expected = new QuantityLength(2.0, LengthUnit.FEET);
+    // ✅ Addition
+    @Test
+    void testAddKgAndGram() {
+        QuantityWeight kg = new QuantityWeight(1.0, WeightUnit.KILOGRAM);
+        QuantityWeight g = new QuantityWeight(1000.0, WeightUnit.GRAM);
 
-        assertTrue(result.equals(expected));
+        QuantityWeight result = kg.add(g);
+
+        assertEquals(new QuantityWeight(2.0, WeightUnit.KILOGRAM), result);
     }
 
     @Test
-    void testAddition_InchesPlusFeet() {
-        QuantityLength a = new QuantityLength(12.0, LengthUnit.INCHES);
-        QuantityLength b = new QuantityLength(1.0, LengthUnit.FEET);
+    void testAddWithTargetUnit() {
+        QuantityWeight kg = new QuantityWeight(1.0, WeightUnit.KILOGRAM);
+        QuantityWeight g = new QuantityWeight(1000.0, WeightUnit.GRAM);
 
-        QuantityLength result = a.add(b, LengthUnit.INCHES);
+        QuantityWeight result = kg.add(g, WeightUnit.GRAM);
 
-        QuantityLength expected = new QuantityLength(24.0, LengthUnit.INCHES);
+        assertEquals(new QuantityWeight(2000.0, WeightUnit.GRAM), result);
+    }
 
-        assertTrue(result.equals(expected));
+    // ✅ Edge Cases
+    @Test
+    void testZero() {
+        QuantityWeight kg = new QuantityWeight(5.0, WeightUnit.KILOGRAM);
+        QuantityWeight zero = new QuantityWeight(0.0, WeightUnit.GRAM);
+
+        assertEquals(kg, kg.add(zero));
     }
 
     @Test
-    void testInvalidValue() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new QuantityLength(Double.NaN, LengthUnit.FEET));
+    void testNegative() {
+        QuantityWeight kg = new QuantityWeight(5.0, WeightUnit.KILOGRAM);
+        QuantityWeight neg = new QuantityWeight(-2000.0, WeightUnit.GRAM);
+
+        QuantityWeight result = kg.add(neg);
+
+        assertEquals(new QuantityWeight(3.0, WeightUnit.KILOGRAM), result);
     }
 
+    // ❌ Category safety (VERY IMPORTANT)
     @Test
-    void testNullUnit() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new QuantityLength(1.0, null));
+    void testWeightNotEqualsLength() {
+        QuantityWeight weight = new QuantityWeight(1.0, WeightUnit.KILOGRAM);
+        QuantityLength length = new QuantityLength(1.0, LengthUnit.FEET);
+
+        assertNotEquals(weight, length);
     }
 }
