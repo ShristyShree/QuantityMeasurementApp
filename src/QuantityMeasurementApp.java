@@ -2,7 +2,9 @@ public class QuantityMeasurementApp {
 
     enum LengthUnit {
         FEET(1.0),
-        INCH(1.0 / 12.0);
+        INCH(1.0 / 12.0),
+        YARDS(3.0),
+        CENTIMETERS(0.393701 / 12.0);
 
         private final double toFeet;
 
@@ -44,16 +46,22 @@ public class QuantityMeasurementApp {
     }
 
     public static void main(String[] args) {
-        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
-        QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCH);
+        var q1 = new QuantityLength(1.0, LengthUnit.YARDS);
+        var q2 = new QuantityLength(3.0, LengthUnit.FEET);
 
-        System.out.println("Input: Quantity(1.0, feet) and Quantity(12.0, inch)");
+        System.out.println("Input: Quantity(1.0, YARDS) and Quantity(3.0, FEET)");
         System.out.println("Output: Equal (" + q1.equals(q2) + ")");
 
-        QuantityLength q3 = new QuantityLength(1.0, LengthUnit.INCH);
-        QuantityLength q4 = new QuantityLength(1.0, LengthUnit.INCH);
+        var q3 = new QuantityLength(1.0, LengthUnit.YARDS);
+        var q4 = new QuantityLength(36.0, LengthUnit.INCH);
 
-        System.out.println("Input: Quantity(1.0, inch) and Quantity(1.0, inch)");
+        System.out.println("Input: Quantity(1.0, YARDS) and Quantity(36.0, INCH)");
         System.out.println("Output: Equal (" + q3.equals(q4) + ")");
+
+        var q5 = new QuantityLength(1.0, LengthUnit.CENTIMETERS);
+        var q6 = new QuantityLength(0.393701, LengthUnit.INCH);
+
+        System.out.println("Input: Quantity(1.0, CENTIMETERS) and Quantity(0.393701, INCH)");
+        System.out.println("Output: Equal (" + q5.equals(q6) + ")");
     }
 }
